@@ -11,10 +11,17 @@ import { useState } from "react";
 import { CarListing } from "../../schema";
 import { db } from "../../configs/index";
 import IconField from "./components/IconField";
+import UploadingImages from "./components/UploadingImages";
+import { BiLoaderAlt } from "react-icons/bi";
+import { toast } from "@/components/ui/use-toast";
+import { useNavigation } from "react-router-dom";
 
 function AddListing() {
   const [formData, setFormData] = useState([]);
   const [featuresData, setFeaturesData] = useState([]);
+  const [triggerUploadImages, setTriggerUploadImages] = useState();
+  const [loader, setLoader] = useState(false);
+  const navigate = useNavigation();
 
   /**
  
@@ -39,15 +46,20 @@ Use to capture user form from}
   };
 
   const onSubmit = async (e) => {
+    setLoader(true);
     e.preventDefault();
     console.log(formData);
+    toast("Please Wait...");
     try {
       const result = await db
         .insert(CarListing)
-        .values({ ...formData, features: featuresData });
+        .values({ ...formData, features: featuresData })
+        .returning({ id: CarListing.id });
 
       if (result) {
         console.log("Data saved");
+        setTriggerUploadImages(result[0]?.id);
+        setLoader(false);
       }
     } catch (e) {
       console.log("Error", e);
@@ -108,9 +120,24 @@ Use to capture user form from}
               ))}
             </div>
           </div>
+          <Separator className="my-6" />
           {/**Car images */}
+          <UploadingImages
+            triggerUploadImages={triggerUploadImages}
+            setLoader={(setLoader, navigate("/profile"))}
+          />
           <div className="mt-10 flex justify-end">
-            <Button onClick={(e) => onSubmit(e)}>Submit</Button>
+            <Button
+              type="button"
+              disabled={loader}
+              onClick={(e) => onSubmit(e)}
+            >
+              {!loader ? (
+                "Submit"
+              ) : (
+                <BiLoaderAlt className="animate-spin text-lg" />
+              )}
+            </Button>
           </div>
         </form>
       </div>
