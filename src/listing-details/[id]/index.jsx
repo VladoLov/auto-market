@@ -9,6 +9,12 @@ import Service from "@/assets/Shared/Service";
 import ImageGallery from "../Comonents/ImageGallery";
 import Description from "../Comonents/Description";
 import Features from "../Comonents/Features";
+import Pricing from "../Comonents/Pricing";
+import Specification from "../Comonents/Specification";
+import OwnersDetail from "../Comonents/OwnersDetail";
+import Footer from "@/components/Footer";
+import FinancialCalculator from "../Comonents/FinancialCalculator";
+import MostSearchedCar from "@/components/MostSearchedCar";
 
 function ListingDetail() {
   const { id } = useParams();
@@ -71,16 +77,22 @@ function ListingDetail() {
             <Description carDetail={carDetail} />
             {/*  Features List */}
             <Features features={carDetail?.features} />
+            {/**FinancialCalculator */}
+            <FinancialCalculator carDetail={carDetail} />
           </div>
           {/**Right */}
           <div className="">
             {/*  Pricing */}
+            <Pricing price={carDetail.sellingPrice} />
             {/*  Car Properties */}
+            <Specification carDetail={carDetail} />
             {/*  Owners Detail */}
+            <OwnersDetail carDetail={carDetail} />
           </div>
         </div>
+        <MostSearchedCar />
       </div>
-      <h2>Listing Subtitles</h2>
+      <Footer />
     </div>
   );
 }
